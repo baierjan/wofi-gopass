@@ -1,0 +1,52 @@
+#!/bin/bash
+
+set -eu
+
+PASS="gopass --nosync"
+MENU="wofi --dmenu"
+TYPE="wl-copy -n -o"
+
+select_password() {
+    $PASS ls -f | $MENU
+}
+
+select_field() {
+    local password=$1
+    declare -a fields
+    fields[0]=password
+    readarray -O 1 -t fields \
+        < <($PASS show "$password" \
+            | tail -n+2 \
+            | cut -f1 -d: -s \
+            | sed 's/^otpauth$/OTP/')
+    if [ "${#fields[@]}" -gt 1 ]; then
+        printf '%s\n' "${fields[@]}" | $MENU
+    else
+        echo password
+    fi
+}
+
+get_field() {
+    local password=$1
+    local field=$2
+    if [ "$field" = 'password' ]; then
+        $PASS show -o -c "$password" &>/dev/null
+    elif [ "$field" = 'OTP' ]; then
+        $PASS otp -o -c "$password" &>/dev/null
+    else
+        $PASS show "$password" \
+            | sed -n "/^$field:/ {s/^[^:]\+:\s*\(.*\)\s*$/\1/;p}" \
+            | $TYPE
+    fi
+}
+
+# select password entry
+password=$(select_password)
+[ -n "$password" ] || exit
+
+# select item from the password file
+field=$(select_field "$password")
+[ -n "$field" ] || exit
+
+# get item from the password file
+get_field "$password" "$field"
