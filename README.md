@@ -6,3 +6,7 @@ This script is inspired by the [wofi-pass](https://gitlab.com/muhq/wofi-pass) ut
 ## Usage
 
 The script uses `wofi` and `wl-copy` to provide a Wayland-native way to interact with [gopass](https://www.gopass.pw).
+
+## Installation
+
+You can just drop the script into the '$PATH' or install it as a package from build.opensuse.org.
