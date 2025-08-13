@@ -2,9 +2,9 @@
 
 set -eu
 
-PASS="gopass --nosync"
-MENU="wofi --dmenu"
-TYPE="wl-copy -n -o"
+PASS=${PASSL-"gopass --nosync"}
+MENU=${MENU:-"wofi --dmenu"}
+TYPE=${TYPE:-"wl-copy -n -o"}
 
 select_password() {
     $PASS ls -f | $MENU
