@@ -33,6 +33,8 @@ get_field() {
         $PASS show -o -c "$password" &>/dev/null
     elif [ "$field" = 'OTP' ]; then
         $PASS otp -o -c "$password" &>/dev/null
+    elif [ "$field" = 'totp' ]; then
+        $PASS otp -o -c "$password" &>/dev/null
     else
         $PASS show "$password" \
             | sed -n "/^$field:/ {s/^[^:]\+:\s*\(.*\)\s*$/\1/;p}" \
